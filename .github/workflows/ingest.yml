@@ -1,0 +1,46 @@
+name: Ingest and Persist DB
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 6 * * *'  # daily 06:30 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      - name: Ensure data dir
+        run: mkdir -p data
+
+      - name: Init DB
+        run: python -m statline.cli initdb
+
+      - name: Backfill last ~2 years (NBA/MLB/NHL)
+        env:
+          DATABASE_URL: sqlite:///data/statline.sqlite3
+        run: python -m statline.cli ingest_two_years
+
+      - name: Commit updated DB
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet -- data/statline.sqlite3; then
+            git add data/statline.sqlite3
+            git commit -m "chore(data): update SQLite DB via ingestion"
+            git push
+          else
+            echo "No DB changes to commit."
