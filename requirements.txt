@@ -1,0 +1,11 @@
+pandas
+requests
+SQLAlchemy>=2
+pydantic
+typer[all]
+python-dotenv
+tqdm
+apscheduler
+pytest
+pytest-mock
+ruff

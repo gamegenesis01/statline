@@ -1,0 +1,13 @@
+[project]
+name='statline-core'
+version='0.2.0'
+description='Core data pipeline for props research'
+requires-python='>=3.11'
+dependencies=['pandas','requests','SQLAlchemy>=2','pydantic','typer[all]','python-dotenv','tqdm','apscheduler']
+
+[project.optional-dependencies]
+dev=['pytest','pytest-mock','ruff']
+
+[tool.pytest.ini_options]
+addopts='-q'
+pythonpath=['src']
