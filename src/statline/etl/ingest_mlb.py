@@ -12,8 +12,14 @@ def backfill_mlb(seasons: list[int]):
 
         for season in seasons:
             for game_pk in mlb.iter_season_game_ids(season):
-                feed = mlb.get_game_feed(game_pk)
-                game_data = feed.get("gameData", {})
+try:
+    feed = mlb.get_game_feed(game_pk)
+except Exception as e:
+    print(f"⚠️ Skipping game {game_pk}: {e}")
+    continue
+
+game_data = feed.get("gameData", {})
+
                 datetime_str = game_data.get("datetime",{}).get("dateTime")
                 if not datetime_str:
                     continue
