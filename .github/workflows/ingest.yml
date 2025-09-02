@@ -29,10 +29,12 @@ jobs:
       - name: Init DB
         run: python -m statline.cli initdb
 
-      - name: Backfill last ~2 years (NBA/MLB/NHL)
+      - name: Backfill last ~2 years (MLB + NHL only)
         env:
           DATABASE_URL: sqlite:///data/statline.sqlite3
-        run: python -m statline.cli ingest_two_years
+        run: |
+          python -m statline.cli ingest MLB --seasons 2024 2025
+          python -m statline.cli ingest NHL --seasons 20232024 20242025
 
       - name: Commit updated DB
         run: |
