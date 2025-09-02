@@ -33,8 +33,10 @@ jobs:
         env:
           DATABASE_URL: sqlite:///data/statline.sqlite3
         run: |
-          python -m statline.cli ingest MLB --seasons 2024 2025
-          python -m statline.cli ingest NHL --seasons 20232024 20242025
+          # MLB seasons 2024 + 2025
+          python -m statline.cli ingest MLB --seasons 2024 --seasons 2025
+          # NHL seasons 2023–2024 + 2024–2025
+          python -m statline.cli ingest NHL --seasons 20232024 --seasons 20242025
 
       - name: Commit updated DB
         run: |
